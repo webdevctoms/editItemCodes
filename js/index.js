@@ -1,8 +1,10 @@
-function App(dropZoneID,downloadID){
+function App(dropZoneID,downloadID,testButtonID){
 	this.csvDropZone = document.getElementById(dropZoneID);
 	this.downloadLink = document.getElementById(downloadID);
+	this.testButton = document.getElementById(testButtonID);
 	this.commaSplitData;
 	this.captureCSV = new CaptureCSV();
+	this.editItemCodes;
 }
 
 App.prototype.initApp = function() {
@@ -16,7 +18,16 @@ App.prototype.initApp = function() {
 		e.preventDefault();
 	}.bind(this),false);
 	//console.log("start app");
+
+	this.testButton.addEventListener("click",function(e){
+		e.preventDefault();
+		this.runTests();
+	}.bind(this),false);
 };
+
+App.prototype.runTests = function(){
+	console.log("run tests");
+}
 
 App.prototype.createCSV = function(arr){
 	let lineArray = [];
@@ -46,6 +57,7 @@ App.prototype.fileDropped = function(event){
 	.then(commaSplitData => {
 		this.commaSplitData = commaSplitData;
 		console.log(this.commaSplitData);
+		this.editItemCodes = new EditItemCodes(this.commaSplitData);
 		
 	})
 
@@ -55,5 +67,5 @@ App.prototype.fileDropped = function(event){
 	//console.log(this.commaSplitData);
 };
 
-let app = new App("drop_zone","downloadLink");
+let app = new App("drop_zone","downloadLink","testData");
 window.onload = app.initApp();
