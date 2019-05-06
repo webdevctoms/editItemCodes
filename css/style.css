@@ -1,0 +1,20 @@
+.hide{
+	display: none;
+}
+
+.center{
+	text-align: center;
+	margin: auto;
+}
+.drop_zone {
+  border: 5px dashed grey;
+  width:  500px;
+  height: 500px;
+  margin:auto;
+  margin-bottom: 20px;
+}
+
+div{
+	padding: 5px;
+	margin:5px;
+}
