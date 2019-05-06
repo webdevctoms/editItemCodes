@@ -27,6 +27,7 @@ App.prototype.initApp = function() {
 
 App.prototype.runTests = function(){
 	console.log("run tests");
+	//Tests.checkCryeCodes();
 }
 
 App.prototype.createCSV = function(arr){
@@ -58,6 +59,7 @@ App.prototype.fileDropped = function(event){
 		this.commaSplitData = commaSplitData;
 		console.log(this.commaSplitData);
 		this.editItemCodes = new EditItemCodes(this.commaSplitData);
+		this.editItemCodes.adjustItemCodes(this.commaSplitData);
 		
 	})
 

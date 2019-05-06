@@ -1,14 +1,17 @@
 function EditItemCodes(commaSplitArr){
 	this.commaSplitArr = commaSplitArr
 	this.vendorIndex = this.getVendorIndex(this.commaSplitArr);
+	//this.cryeFixedArray = [];
+	console.log(this.vendorIndex);
 
 }
 
 EditItemCodes.prototype.getVendorIndex = function(arr){
 	//loop through the titles and find vendor
-	for(let row = 0; row < arr[0].length; row++){	
-		if(arr[0][row].toLowerCase() === "vendor,"){
-			return row;
+	for(let col = 0; col < arr[0].length; col++){	
+		//console.log(arr[0][col].toLowerCase());
+		if(arr[0][col].toLowerCase() === "vendor,"){
+			return col;
 		}
 	}
 
@@ -64,6 +67,14 @@ EditItemCodes.prototype.fixItemCodesCrye = function(itemCode,vendor){
 
 	newItemCode = splitItemCode.join("-");
 	return newItemCode;
+};
+
+EditItemCodes.prototype.fixCryeCodes = function(arr){
+	let cryeFixedArray = [];
+
+	for(let row = 0; row < arr.length; row++){
+
+	}
 };
 
 EditItemCodes.prototype.adjustItemCodes = function(arr){

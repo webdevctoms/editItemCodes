@@ -19,6 +19,19 @@ CaptureCSV.prototype.splitByCommas = function(newLineArr){
 	return commaSplitArr;
 }
 
+CaptureCSV.prototype.addBlank = function(newLineArr){
+	for(let i = 0;i < newLineArr.length;i++){
+		newLineArr[i] = newLineArr[i].replace(/\r\n|\r|\n/,"")
+		if(i === 0){
+			
+			newLineArr[i] += ",blank" + "\n";
+		}
+		else{
+			newLineArr[i]+= "," + "\n";	
+		}
+	}
+}
+
 CaptureCSV.prototype.readFile = function(csvFile){
 	let promise = new Promise((resolve,reject) => {
 		let reader = new FileReader();
@@ -26,7 +39,8 @@ CaptureCSV.prototype.readFile = function(csvFile){
 		reader.onload = function(event){
 			let fileString = event.target.result;
 			let newLineSplitFile = fileString.split("\n");
-			//console.log(newLineSplitFile);
+			this.addBlank(newLineSplitFile);
+			console.log(newLineSplitFile);
 			this.commaSplitArr = this.splitByCommas(newLineSplitFile);
 			//console.log(this.commaSplitArr);
 			//this.reorderedArray = this.commaSplitArr;
