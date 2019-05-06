@@ -6,6 +6,11 @@
 	text-align: center;
 	margin: auto;
 }
+
+.header{
+	margin-bottom: 10px;
+	text-transform: uppercase;
+}
 .drop_zone {
   border: 5px dashed grey;
   width:  500px;
