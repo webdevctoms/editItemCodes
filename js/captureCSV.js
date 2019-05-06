@@ -40,7 +40,7 @@ CaptureCSV.prototype.readFile = function(csvFile){
 			let fileString = event.target.result;
 			let newLineSplitFile = fileString.split("\n");
 			this.addBlank(newLineSplitFile);
-			console.log(newLineSplitFile);
+			//console.log(newLineSplitFile);
 			this.commaSplitArr = this.splitByCommas(newLineSplitFile);
 			//console.log(this.commaSplitArr);
 			//this.reorderedArray = this.commaSplitArr;

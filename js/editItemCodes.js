@@ -19,6 +19,13 @@ EditItemCodes.prototype.getVendorIndex = function(arr){
 
 };
 
+//return fixed sub string
+EditItemCodes.prototype.fixItemCodeSubString = function(subString,index){
+	let splitItem = subString.split("");
+	splitItem.splice(index,0,"-");
+	return splitItem.join("");
+}
+
 //only fix crye item codes for now
 EditItemCodes.prototype.fixItemCodesCrye = function(itemCode,vendor){
 	//2 digits will represent waist size and 2 letters length of pant
@@ -71,10 +78,26 @@ EditItemCodes.prototype.fixItemCodesCrye = function(itemCode,vendor){
 
 EditItemCodes.prototype.fixCryeCodes = function(arr){
 	let cryeFixedArray = [];
+	cryeFixedArray.push(arr[0]);
+	if(this.vendorIndex){
+		for(let row = 1; row < arr.length; row++){
 
-	for(let row = 0; row < arr.length; row++){
-
+			let newItemCode = this.fixItemCodesCrye(arr[row][0],arr[row][this.vendorIndex]);
+			//let rowArray = [];
+			//rowArray.push(arr[row]);
+			//console.log(arr[row],rowArray)
+			//rowArray[0] = newItemCode;
+			cryeFixedArray.push(arr[row]);
+			//console.log(newItemCode);
+			cryeFixedArray[row][0] = newItemCode;
+		}
 	}
+	else{
+		console.log("Error no vendor index");
+	}
+
+	return cryeFixedArray;
+	
 };
 
 EditItemCodes.prototype.adjustItemCodes = function(arr){
@@ -82,4 +105,28 @@ EditItemCodes.prototype.adjustItemCodes = function(arr){
 	for(let i = 1;i < arr.length;i++){
 		arr[i][0] = arr[i][0].replace(/\s/g,"_").replace(/\//g,".").replace(/\-\-/g,"-").toUpperCase();
 	}
+};
+
+EditItemCodes.prototype.removeDuplicateItemCodes = function(arr){
+	let newArr = [];
+	let copyIndexes = {};
+	newArr.push(arr[0]);
+	for(let i = 1;i < arr.length;i++){
+		for(let k = 1;k < arr.length;k++){
+			if(k > i){
+				//duplicate found
+				if(arr[i][0] === arr[k][0]){
+					copyIndexes[k] = k;
+					//console.log("dup at: ",i,k);
+				}
+			}
+		}
+
+		if(!copyIndexes[i]){
+			newArr.push(arr[i]);
+		}
+		
+	}
+
+	return newArr;
 };

@@ -3,6 +3,7 @@ function App(dropZoneID,downloadID,testButtonID){
 	this.downloadLink = document.getElementById(downloadID);
 	this.testButton = document.getElementById(testButtonID);
 	this.commaSplitData;
+	this.noDupArray;
 	this.captureCSV = new CaptureCSV();
 	this.editItemCodes;
 }
@@ -27,7 +28,14 @@ App.prototype.initApp = function() {
 
 App.prototype.runTests = function(){
 	console.log("run tests");
-	//Tests.checkCryeCodes();
+	try{
+		Tests.checkLength(this.cryeEditedArray,this.commaSplitData[0].length);
+		Tests.checkCryeCodes(this.cryeEditedArray);
+		Tests.checkForDups(this.noDupArray);
+	}
+	catch(err){
+		console.log("error testing ",err);
+	}
 }
 
 App.prototype.createCSV = function(arr){
@@ -57,9 +65,13 @@ App.prototype.fileDropped = function(event){
 
 	.then(commaSplitData => {
 		this.commaSplitData = commaSplitData;
-		console.log(this.commaSplitData);
+		//console.log(this.commaSplitData);
 		this.editItemCodes = new EditItemCodes(this.commaSplitData);
 		this.editItemCodes.adjustItemCodes(this.commaSplitData);
+		this.cryeEditedArray = this.editItemCodes.fixCryeCodes(this.commaSplitData);
+		console.log(this.cryeEditedArray);
+		this.noDupArray = this.editItemCodes.removeDuplicateItemCodes(this.cryeEditedArray);
+		console.log(this.noDupArray);
 		
 	})
 
