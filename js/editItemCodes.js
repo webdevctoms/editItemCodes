@@ -1,7 +1,10 @@
 function EditItemCodes(commaSplitArr,itemCodeIdentifier,vendorIdentifier){
-	this.commaSplitArr = commaSplitArr
-	this.vendorIndex = this.getIndex(this.commaSplitArr,vendorIdentifier);
-	this.itemCodeIndex = this.getIndex(this.commaSplitArr,itemCodeIdentifier);
+	if(commaSplitArr !== undefined){
+		this.commaSplitArr = commaSplitArr
+		this.vendorIndex = this.getIndex(this.commaSplitArr,vendorIdentifier);
+		this.itemCodeIndex = this.getIndex(this.commaSplitArr,itemCodeIdentifier);
+	}
+	
 	console.log("vendor, item code ",this.vendorIndex,this.itemCodeIndex);
 
 }
@@ -133,4 +136,25 @@ EditItemCodes.prototype.removeDuplicateItemCodes = function(arr){
 	}
 
 	return newArr;
+};
+
+EditItemCodes.prototype.removeByItemCode = function(arr,filterByArr){
+	let foundIndexes = {};
+	let filteredArr = [];
+	for(let row = 1; row < arr.length; row++){
+		for(let i = 0; i < filterByArr.length; i++){
+			if(arr[row][0] === filterByArr[i]){
+				foundIndexes[row] = row;
+				break;
+			}
+		}
+	}
+
+	for(let row = 0; row < arr.length; row++){
+		if(!foundIndexes[row]){
+			filteredArr.push(arr[row]);
+		}
+	}
+
+	return filteredArr;
 };

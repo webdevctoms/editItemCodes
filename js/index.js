@@ -1,13 +1,14 @@
-function App(dropZoneID,downloadID,testButtonID,filterDropZoneID){
+function App(dropZoneID,downloadID,testButtonID,filterDropZoneID,filterButtonID){
 	this.csvDropZone = document.getElementById(dropZoneID);
 	this.downloadLink = document.getElementById(downloadID);
 	this.testButton = document.getElementById(testButtonID);
 	this.filterDropZone = document.getElementById(filterDropZoneID);
+	this.filterButton = document.getElementById(filterButtonID);
 	this.commaSplitData;
-	this.filterByData;
+	this.itemCodeFilterArray;
 	this.noDupArray;
 	this.captureCSV = new CaptureCSV();
-	this.editItemCodes;
+	this.editItemCodes = new EditItemCodes();
 }
 
 App.prototype.initApp = function() {
@@ -20,11 +21,15 @@ App.prototype.initApp = function() {
 	this.csvDropZone.addEventListener("dragover",function(e){
 		e.preventDefault();
 	}.bind(this),false);
-	//console.log("start app");
 
 	this.testButton.addEventListener("click",function(e){
 		e.preventDefault();
 		this.runTests();
+	}.bind(this),false);
+
+	this.filterButton.addEventListener("click",function(e){
+		e.preventDefault();
+		this.filterClicked();
 	}.bind(this),false);
 
 	this.filterDropZone.addEventListener("drop",function(e){
@@ -48,7 +53,20 @@ App.prototype.runTests = function(){
 	catch(err){
 		console.log("error testing ",err);
 	}
-}
+};
+
+App.prototype.filterClicked = function(){
+	console.log("filter clicked");
+	try{
+		let filteredData = this.editItemCodes.removeByItemCode(this.noDupArray,this.itemCodeFilterArray);
+		console.log(filteredData);
+		let csvData = this.createCSV(filteredData);
+		this.createDownload(csvData);
+	}
+	catch(err){
+		console.log("error testing ",err);
+	}
+};
 
 App.prototype.createCSV = function(arr){
 	let lineArray = [];
@@ -61,7 +79,7 @@ App.prototype.createCSV = function(arr){
 	let csvContent = lineArray.join("\n");
 	let encodedUri = encodeURI(csvContent);
 	//console.log(csvContent);
-	return encodedUri
+	return encodedUri;
 };
 
 App.prototype.createDownload = function(csvData){
@@ -79,12 +97,13 @@ App.prototype.filterFileDropped = function(event){
 		let filterByData = commaSplitData;
 		
 		let editItemCodes = new EditItemCodes(filterByData,"Name","vendor");
+		editItemCodes.adjustItemCodes(filterByData);
 		console.log(filterByData);
 		let cryeEditedArray = editItemCodes.fixCryeCodes(filterByData);
 		let noDupArray = editItemCodes.removeDuplicateItemCodes(cryeEditedArray);
-		let itemCodeArray = editItemCodes.captureItemCodes(noDupArray);
+		this.itemCodeFilterArray = editItemCodes.captureItemCodes(noDupArray);
 		console.log(noDupArray);
-		console.log("item codes ",itemCodeArray);
+		console.log("item codes ",this.itemCodeFilterArray);
 	})
 
 	.catch(err => {
@@ -117,5 +136,5 @@ App.prototype.fileDropped = function(event){
 	//console.log(this.commaSplitData);
 };
 
-let app = new App("drop_zone","downloadLink","testData","drop_zone_filter");
+let app = new App("drop_zone","downloadLink","testData","drop_zone_filter","filterData");
 window.onload = app.initApp();
