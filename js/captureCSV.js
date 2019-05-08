@@ -14,14 +14,14 @@ CaptureCSV.prototype.splitByCommas = function(newLineArr){
 		commaSplitArr.push(rowMatches);		
 	}
 	//remove last blank
-	commaSplitArr.pop();
+	//commaSplitArr.pop();
 	
 	return commaSplitArr;
 }
 
 CaptureCSV.prototype.addBlank = function(newLineArr){
 	for(let i = 0;i < newLineArr.length;i++){
-		newLineArr[i] = newLineArr[i].replace(/\r\n|\r|\n/,"")
+		newLineArr[i] = newLineArr[i].replace(/\r\n|\r|\n/,"");
 		if(i === 0){
 			
 			newLineArr[i] += ",blank" + "\n";
@@ -40,10 +40,7 @@ CaptureCSV.prototype.readFile = function(csvFile){
 			let fileString = event.target.result;
 			let newLineSplitFile = fileString.split("\n");
 			this.addBlank(newLineSplitFile);
-			//console.log(newLineSplitFile);
 			this.commaSplitArr = this.splitByCommas(newLineSplitFile);
-			//console.log(this.commaSplitArr);
-			//this.reorderedArray = this.commaSplitArr;
 			resolve(this.commaSplitArr);
 			
 		}.bind(this);

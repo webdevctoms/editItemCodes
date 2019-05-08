@@ -1,22 +1,31 @@
-function EditItemCodes(commaSplitArr){
+function EditItemCodes(commaSplitArr,itemCodeIdentifier,vendorIdentifier){
 	this.commaSplitArr = commaSplitArr
-	this.vendorIndex = this.getVendorIndex(this.commaSplitArr);
-	//this.cryeFixedArray = [];
-	console.log(this.vendorIndex);
+	this.vendorIndex = this.getIndex(this.commaSplitArr,vendorIdentifier);
+	this.itemCodeIndex = this.getIndex(this.commaSplitArr,itemCodeIdentifier);
+	console.log("vendor, item code ",this.vendorIndex,this.itemCodeIndex);
 
 }
 
-EditItemCodes.prototype.getVendorIndex = function(arr){
+EditItemCodes.prototype.getIndex = function(arr,identifier){
 	//loop through the titles and find vendor
 	for(let col = 0; col < arr[0].length; col++){	
 		//console.log(arr[0][col].toLowerCase());
-		if(arr[0][col].toLowerCase() === "vendor,"){
+		if(arr[0][col].toLowerCase() === (identifier.toLowerCase() + ",")){
 			return col;
 		}
 	}
 
 	return null;
+};
 
+EditItemCodes.prototype.captureItemCodes = function(arr){
+	let itemCodeArr = [];
+	//loop through the titles and find vendor
+	for(let row = 1; row < arr.length; row++){	
+		itemCodeArr.push(arr[row][this.itemCodeIndex])
+	}
+
+	return itemCodeArr;
 };
 
 //return fixed sub string
@@ -83,12 +92,7 @@ EditItemCodes.prototype.fixCryeCodes = function(arr){
 		for(let row = 1; row < arr.length; row++){
 
 			let newItemCode = this.fixItemCodesCrye(arr[row][0],arr[row][this.vendorIndex]);
-			//let rowArray = [];
-			//rowArray.push(arr[row]);
-			//console.log(arr[row],rowArray)
-			//rowArray[0] = newItemCode;
 			cryeFixedArray.push(arr[row]);
-			//console.log(newItemCode);
 			cryeFixedArray[row][0] = newItemCode;
 		}
 	}

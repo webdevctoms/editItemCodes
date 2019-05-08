@@ -1,8 +1,10 @@
-function App(dropZoneID,downloadID,testButtonID){
+function App(dropZoneID,downloadID,testButtonID,filterDropZoneID){
 	this.csvDropZone = document.getElementById(dropZoneID);
 	this.downloadLink = document.getElementById(downloadID);
 	this.testButton = document.getElementById(testButtonID);
+	this.filterDropZone = document.getElementById(filterDropZoneID);
 	this.commaSplitData;
+	this.filterByData;
 	this.noDupArray;
 	this.captureCSV = new CaptureCSV();
 	this.editItemCodes;
@@ -23,6 +25,16 @@ App.prototype.initApp = function() {
 	this.testButton.addEventListener("click",function(e){
 		e.preventDefault();
 		this.runTests();
+	}.bind(this),false);
+
+	this.filterDropZone.addEventListener("drop",function(e){
+		e.preventDefault();
+		this.filterFileDropped(e);
+	}.bind(this),false);
+
+	//need this to prevent default downloading of file
+	this.filterDropZone.addEventListener("dragover",function(e){
+		e.preventDefault();
 	}.bind(this),false);
 };
 
@@ -59,20 +71,20 @@ App.prototype.createDownload = function(csvData){
 	this.downloadLink.setAttribute("download", "new_data.csv");
 };
 
-App.prototype.fileDropped = function(event){
+App.prototype.filterFileDropped = function(event){
 	let csvFile = event.dataTransfer.items[0].getAsFile();
 	this.captureCSV.readFile(csvFile)
 
 	.then(commaSplitData => {
-		this.commaSplitData = commaSplitData;
-		//console.log(this.commaSplitData);
-		this.editItemCodes = new EditItemCodes(this.commaSplitData);
-		this.editItemCodes.adjustItemCodes(this.commaSplitData);
-		this.cryeEditedArray = this.editItemCodes.fixCryeCodes(this.commaSplitData);
-		console.log(this.cryeEditedArray);
-		this.noDupArray = this.editItemCodes.removeDuplicateItemCodes(this.cryeEditedArray);
-		console.log(this.noDupArray);
+		let filterByData = commaSplitData;
 		
+		let editItemCodes = new EditItemCodes(filterByData,"Name","vendor");
+		console.log(filterByData);
+		let cryeEditedArray = editItemCodes.fixCryeCodes(filterByData);
+		let noDupArray = editItemCodes.removeDuplicateItemCodes(cryeEditedArray);
+		let itemCodeArray = editItemCodes.captureItemCodes(noDupArray);
+		console.log(noDupArray);
+		console.log("item codes ",itemCodeArray);
 	})
 
 	.catch(err => {
@@ -81,5 +93,29 @@ App.prototype.fileDropped = function(event){
 	//console.log(this.commaSplitData);
 };
 
-let app = new App("drop_zone","downloadLink","testData");
+
+App.prototype.fileDropped = function(event){
+	let csvFile = event.dataTransfer.items[0].getAsFile();
+	this.captureCSV.readFile(csvFile)
+
+	.then(commaSplitData => {
+		this.commaSplitData = commaSplitData;
+		//console.log(this.commaSplitData);
+		let editItemCodes = new EditItemCodes(this.commaSplitData,"Name","vendor");
+		editItemCodes.adjustItemCodes(this.commaSplitData);
+		this.cryeEditedArray = editItemCodes.fixCryeCodes(this.commaSplitData);
+		console.log(this.cryeEditedArray);
+		this.noDupArray = editItemCodes.removeDuplicateItemCodes(this.cryeEditedArray);
+		console.log(this.noDupArray);
+		let csvData = this.createCSV(this.noDupArray);
+		this.createDownload(csvData);
+	})
+
+	.catch(err => {
+		console.log("error reading file", err);
+	});
+	//console.log(this.commaSplitData);
+};
+
+let app = new App("drop_zone","downloadLink","testData","drop_zone_filter");
 window.onload = app.initApp();
