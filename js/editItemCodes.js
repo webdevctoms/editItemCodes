@@ -1,8 +1,12 @@
 function EditItemCodes(commaSplitArr,itemCodeIdentifier,vendorIdentifier){
 	if(commaSplitArr !== undefined){
 		this.commaSplitArr = commaSplitArr
-		this.vendorIndex = this.getIndex(this.commaSplitArr,vendorIdentifier);
-		this.itemCodeIndex = this.getIndex(this.commaSplitArr,itemCodeIdentifier);
+		if(this.itemCodeIdentifier !== ""){			
+			this.itemCodeIndex = this.getIndex(this.commaSplitArr,itemCodeIdentifier);
+		}
+		if(this.vendorIdentifier !== ""){
+			this.vendorIndex = this.getIndex(this.commaSplitArr,vendorIdentifier);
+		}		
 	}
 	
 	console.log("vendor, item code ",this.vendorIndex,this.itemCodeIndex);
@@ -143,7 +147,7 @@ EditItemCodes.prototype.removeByItemCode = function(arr,filterByArr){
 	let filteredArr = [];
 	for(let row = 1; row < arr.length; row++){
 		for(let i = 0; i < filterByArr.length; i++){
-			if(arr[row][0] === filterByArr[i]){
+			if(arr[row][this.itemCodeIndex] === filterByArr[i]){
 				foundIndexes[row] = row;
 				break;
 			}
