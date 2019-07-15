@@ -1,5 +1,4 @@
 function CaptureCSV(){
-	console.log("CaptureCSV")
 	this.commaSplitArr;
 }
 
@@ -13,11 +12,9 @@ CaptureCSV.prototype.splitByCommas = function(newLineArr){
 		let rowMatches = sanitizedString.match(commaRegex);
 		commaSplitArr.push(rowMatches);		
 	}
-	//remove last blank
-	//commaSplitArr.pop();
 	
 	return commaSplitArr;
-}
+};
 
 CaptureCSV.prototype.addBlank = function(newLineArr){
 	for(let i = 0;i < newLineArr.length;i++){
@@ -30,7 +27,7 @@ CaptureCSV.prototype.addBlank = function(newLineArr){
 			newLineArr[i]+= "," + "\n";	
 		}
 	}
-}
+};
 
 CaptureCSV.prototype.readFile = function(csvFile){
 	let promise = new Promise((resolve,reject) => {
@@ -41,6 +38,10 @@ CaptureCSV.prototype.readFile = function(csvFile){
 			let newLineSplitFile = fileString.split("\n");
 			this.addBlank(newLineSplitFile);
 			this.commaSplitArr = this.splitByCommas(newLineSplitFile);
+
+			if(this.commaSplitArr[this.commaSplitArr.length - 1].length === 1){
+				this.commaSplitArr.pop();
+			}
 			resolve(this.commaSplitArr);
 			
 		}.bind(this);
@@ -49,4 +50,4 @@ CaptureCSV.prototype.readFile = function(csvFile){
 	});
 	
 	return promise;
-}
+};
